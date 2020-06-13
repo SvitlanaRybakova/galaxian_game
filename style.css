@@ -1,0 +1,45 @@
+:root{
+  --unit: 1px;
+  /* размер клеточек 40 пикс на 40 */
+  --value-size: 20;
+  /* количество клеточек в строке */
+  --value-count: 20;
+  --size-cell: calc(var(--value-size) * var(--unit));
+  /* зададим жесткий размер для блока game, независимо от количесва ячеек в строке */
+  --multiply-size: calc(var(--value-count) * var(--size-cell));
+}
+html, body{
+  margin: 0;
+  padding: 0;
+}
+body{
+   background-color: gray;
+}
+.game{
+   /* box-sizing: border-box; */
+ 
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  border: 3px solid rgb(77, 75, 75);
+  height: var(--multiply-size);
+  width: var(--multiply-size);
+
+}
+.game div{
+  /* border: red 1px solid; */
+  height: var(--size-cell);
+  width: var(--size-cell);
+  border-radius: 50%;
+}
+
+.enemy{
+  background-color: orange;
+}
+
+.player{
+
+background-color:orangered;
+border-radius: 50% 50% 50% 50% / 100% 100% 0 0 !important;
+
+}
