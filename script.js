@@ -12,6 +12,8 @@ const indexEnemies = [
   43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
   63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 74, 75
 ];
+// записывает погибших врагов
+const killEnemy = [];
 
 for (let i of indexEnemies) {
   bloks[i].classList.add('enemy');
@@ -40,13 +42,17 @@ const moveEnemies = () => {
     indexEnemies[i] += step;
   }
 
-  indexEnemies.forEach(index => {
-    bloks[index].classList.add('enemy');
+  indexEnemies.forEach((index, i)=> {
+    if(!killEnemy.includes(i)){
+      bloks[index].classList.add('enemy');
+    }
+    
   });
 
 //  проверка есть ли у игрока класс enemy, если да ьл значит враги столкнулись с кораблем
   if(bloks[playerIndex].classList.contains('enemy')){
     alert('GAME OVER!!!!');
+    endGame();
     retutn;
   }
 
@@ -54,10 +60,18 @@ const moveEnemies = () => {
   for (let i = 0; i <= indexEnemies.length; i++){
     if (indexEnemies[i] > bloks.length - row){
       alert('GAME OVER!!!!');
+      endGame();
       retutn;
     }
   }
-  setTimeout(moveEnemies, 100);
+
+  // определяем победу
+  if (killEnemy.length === indexEnemies.length){
+    alert('You are win!!!');
+    endGame();
+    return;
+  }
+  setTimeout(moveEnemies, 300);
 };
 
 moveEnemies();
@@ -80,3 +94,45 @@ const movePlayer = event => {
 };
 
 document.addEventListener('keydown', movePlayer);
+
+// отрисовываем пулю
+const fire = event => {
+  if(event.code === 'Space'){
+    let bulletIndex = playerIndex;
+
+    const flyBullet = () => {
+      bloks[bulletIndex].classList.remove('bullet');
+      bulletIndex -= row;
+      bloks[bulletIndex].classList.add('bullet');
+
+      if(bulletIndex < row){
+        setTimeout(() => {
+           bloks[bulletIndex].classList.remove('bullet');
+        }, 50)
+       
+        return;
+      }
+
+      if(bloks[bulletIndex].classList.contains('enemy')){
+        bloks[bulletIndex].classList.remove('bullet');
+        bloks[bulletIndex].classList.remove('enemy');
+
+        // опредеояем убитого врага
+        const indexKillEnemy = indexEnemies.indexOf(bulletIndex);
+        
+        killEnemy.push(indexKillEnemy);
+        return;
+      }
+
+      setTimeout(flyBullet, 50);
+    }
+
+    flyBullet();
+  }
+};
+document.addEventListener('keydown', fire);
+
+const endGame = () => {
+  document.removeEventListener('keydown', movePlayer);
+  document.removeEventListener('keydown', fire);
+}
